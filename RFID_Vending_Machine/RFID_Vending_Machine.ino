@@ -14,13 +14,13 @@ const char* password = "<secret>";
 
 // Connection details.
 const char* apiHost = "http://10.0.0.101";
-const char* apiSecret = "cookiemonster";
+const char* apiSecret = "<secret>";
 
 // Machine vending details.
-const int costAmount = 200; // in cents
-const String costString = "2.00"; // displayed on the screen
-const int dispensePin = 4; // pin that triggers the vending machine relay
-const char* machineName = "VEND-DrinksLeft"; // used as WiFi and OTA host name
+const int costAmount = 240; // in cents
+const String costString = "2.40"; // displayed on the screen
+const int dispensePin = D7; // pin that triggers the vending machine relay
+const char* machineName = "VEND-DrinksRight"; // used as WiFi and OTA host name
 const char* purchaseDescription = "Vending Machine Drink Purchase"; //"Drink purchase from a vending machine."; // description sent to debit API
 const char* machinePassword = "<secret>"; // secret password for OTA updates
 
@@ -29,7 +29,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 #define printByte(args)  write(args);
 uint8_t check[8] = {0x0, 0x1 , 0x3, 0x16, 0x1c, 0x8, 0x0};
 uint8_t cross[8] = {0x0, 0x1b, 0xe, 0x4, 0xe, 0x1b, 0x0};
-uint8_t clock[8] = {0x0, 0xe, 0x15, 0x17, 0x11, 0xe, 0x0};
+uint8_t iClock[8] = {0x0, 0xe, 0x15, 0x17, 0x11, 0xe, 0x0};
 
 WiFiClient client;
 HTTPClient http;
@@ -119,7 +119,7 @@ void initLCD() {
   lcd.init();
   lcd.createChar(0, check);
   lcd.createChar(1, cross);
-  lcd.createChar(2, clock);
+  lcd.createChar(2, iClock);
   lcd.backlight();
   //  writeLCD("RFID Disabled for Testing", 1);
   lcd.backlight();
@@ -190,7 +190,7 @@ void checkCard(long tagid) {
   Serial.println(url);
 
   if (http.begin(url)) {
-    int httpCode = http.GET();
+    int httpCode = http.POST("");
     Serial.println("HTTP Response Code: " + String(httpCode));
 
     // httpCode will be negative on error
